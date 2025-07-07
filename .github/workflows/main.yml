@@ -1,0 +1,31 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: 'Build and Test'
+    runs-on: '24.04'
+
+    steps:
+      - name: Clone the project
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'        
+          distribution: 'temurin'   
+          cache: 'maven'            
+
+      - name: 'Install dependencies'
+        run: mvn --batch-mode --update-snapshots dependency:resolve
+
+      - name: 'Build project'
+        run: mvn --batch-mode --update-snapshots package
+
+      - name: 'Run unit tests'
+        run: mvn --batch-mode --update-snapshots test
